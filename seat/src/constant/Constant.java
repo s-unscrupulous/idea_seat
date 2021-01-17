@@ -62,7 +62,7 @@ public class Constant {
         /**
          * 鼠标停留时间
          */
-        public static final int STOP_TIME = 3 * 60 * 1000;
+        public static final int STOP_TIME = 10 * 60 * 1000;
         /**
          * 休息时间
          */
