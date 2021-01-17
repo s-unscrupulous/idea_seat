@@ -22,11 +22,6 @@ public class Constant {
         public static final String SETTING_TIME_SELECTOR_TEXT = "请选择提醒周期（单位：分钟）:";
 
         /**
-         * 初始化模型的可选数组
-         */
-        public static final String[] MODEL_SELECT_ARRAY = new String[]{"CXK", "锦鲤杨超越", "奥利给", "超励志奥利给"};
-
-        /**
          * 初始化时间的可选数组
          */
         public static final String[] TIME_SELECT_ARRAY = new String[]{"1", "30", "40", "60"};

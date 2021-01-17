@@ -63,7 +63,6 @@ public class SettingAction extends AnAction {
         ScheduledExecutorService service = Executors
                 .newSingleThreadScheduledExecutor();
         AtomicInteger count = new AtomicInteger();
-        // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
         service.scheduleAtFixedRate(() -> {
             if (QueryListener.flag) {
                 QueryListener.flag = false;
