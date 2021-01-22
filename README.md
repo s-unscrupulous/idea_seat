@@ -1,6 +1,6 @@
 # IDEA 久坐提醒插件
 
-<div align=center><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzUxNjg4NDEzNA==&action=getalbum&album_id=1339316622149992449&scene=21#wechat_redirect"><img src="https://img.shields.io/badge/公众号-逛逛GitHub-red.svg"></a><a href=""><img src="https://img.shields.io/badge/交流群-点击加入-green.svg"></a></div>
+<div align=center><a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzUxNjg4NDEzNA==&action=getalbum&album_id=1339316622149992449&scene=21#wechat_redirect"><img src="https://img.shields.io/badge/公众号-逛逛GitHub-red.svg"></a></div>
 
 ### 前言
 
@@ -63,6 +63,6 @@
 
 这只是第一个版本，后面还会不断更新。有需求的朋友可以加入交流群讨论啊！
 
-扫描下方二维码，回复「插件交流群」即可进群啦。
+扫描下方二维码关注微信公众号「逛逛GitHub」，回复「插件交流群」即可进群啦。
 
 ![img](https://tva1.sinaimg.cn/large/008eGmZEly1gmwhn9xkeyj309k09k3yc.jpg) 
