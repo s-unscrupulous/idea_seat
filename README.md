@@ -24,6 +24,8 @@
 
 下面是插件的安装教程：
 
+也可以查看B站的安装教学视频：https://www.bilibili.com/video/BV1Vy4y1H7mC/
+
 **1. 下载 Jar 包**
 
 地址：https://github.com/s-unscrupulous/idea_seat
