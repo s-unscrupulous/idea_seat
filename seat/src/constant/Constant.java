@@ -9,7 +9,7 @@ public class Constant {
         /**
          * 设置窗口标题
          */
-        public static final String SETTING_WINDOW_TITLE = "Assistant Setting";
+        public static final String SETTING_WINDOW_TITLE = "休息小助手";
 
         /**
          * 窗体模型选择器提示文本
@@ -22,9 +22,19 @@ public class Constant {
         public static final String SETTING_TIME_SELECTOR_TEXT = "请选择提醒周期（单位：分钟）:";
 
         /**
+         * 是否开启锁屏
+         */
+        public static final String SETTING_LOCK_WINDOWS = "是否开启强制锁屏功能:";
+
+        /**
          * 初始化时间的可选数组
          */
         public static final String[] TIME_SELECT_ARRAY = new String[]{"1", "30", "40", "60"};
+
+        /**
+         * 锁屏值
+         */
+        public static final String[] LOCK_SELECT_ARRAY = new String[]{"是", "否"};
     }
 
     /**
@@ -107,7 +117,12 @@ public class Constant {
         /**
          * 第五个运动
          */
-        S_5("/icons/05.gif", "运动一下", "站直或坐直，努力向下收紧两侧肩胛骨，就像肩胛骨之间有一支铅笔需要抓住一样。这个过程中，要避免耸肩。保持5秒钟，然后放松，重复10次。你应该能感觉到肩膀上斜方肌的拉伸。");
+        S_5("/icons/05.gif", "运动一下", "站直或坐直，努力向下收紧两侧肩胛骨，就像肩胛骨之间有一支铅笔需要抓住一样。这个过程中，要避免耸肩。保持5秒钟，然后放松，重复10次。你应该能感觉到肩膀上斜方肌的拉伸。"),
+        S_6("/icons/06.gif", "运动一下", "站直或坐直， 记住每小时踢踢腿，拉拉筋"),
+        S_7("/icons/07.gif", "运动一下", "站直或坐直，努力向下收紧两侧肩胛骨,转转胳膊"),
+        S_8("/icons/08.gif", "运动一下", "不想颈部变硬，那就得转转转，而且要两边转"),
+        S_9("/icons/09.gif", "运动一下", "记得坐在凳子上转转脚，松松筋！"),
+        S_10("/icons/10.gif", "运动一下", "每小时松松手拉拉筋");
 
 
         /**

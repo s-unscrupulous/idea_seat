@@ -2,15 +2,13 @@
     <id>com.your.company.unique.plugin.id</id>
     <name>休息提示小助手</name>
     <version>1.1</version>
-    <vendor email="1098832322@qq.com" url="http://wishes-blog.cn">Wishes丶</vendor>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="173.0"/>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
-    <depends>com.intellij.modules.lang</depends>
-    -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.java</depends>
+
+
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceInterface="service.AlertService"

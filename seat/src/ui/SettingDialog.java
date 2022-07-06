@@ -9,9 +9,14 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SettingDialog extends DialogWrapper {
+
+    private boolean isLock;
+    private String timeValue = "";
     /**
      * 项目
      */
@@ -20,12 +25,7 @@ public class SettingDialog extends DialogWrapper {
     /**
      * 窗内文字
      */
-    private String modelText, timeText;
-
-    /**
-     * 备选值
-     */
-    private String[] modelSelectedValues;
+    private String lockText, timeText;
 
     /**
      * 时间备选值
@@ -33,9 +33,10 @@ public class SettingDialog extends DialogWrapper {
     private String[] timeSelectedValues;
 
     /**
-     * 默认选中模型
+     * 锁屏备选值
      */
-    private String defaultModelValue;
+    private String[] lockSelectedValues;
+
 
     /**
      * 默认选中时间
@@ -43,26 +44,38 @@ public class SettingDialog extends DialogWrapper {
     private String defaultTimeValue;
 
     /**
-     * 参数校验器
+     * 默认锁屏模式时间
      */
+    private String defaultLockValue;
+
     private InputValidator inputValidator;
 
     /**
      * 模型和时间选择框
      */
-    private ComboBox<String> timeSelector, modelSelector;
+    private ComboBox<String> timeSelector, lockSelector;
 
-    public SettingDialog(@Nullable Project project, String title,  String timeText
-            , String[] timeSelectedValues
+    public SettingDialog(@Nullable Project project, String title, String timeText
+            , String[] timeSelectedValues, String lockText
             , InputValidator inputValidator) {
         super(project);
         setTitle(title);
+        this.lockText = lockText;
         this.timeText = timeText;
-        this.timeSelectedValues = isEmpty(timeSelectedValues) ? initTimeSelectValues() : timeSelectedValues;
-        this.defaultModelValue = readFromStorage(true);
-        this.defaultTimeValue = readFromStorage(false);
+        this.lockSelectedValues = initLockSelectValues();
+        this.timeSelectedValues = initTimeSelectValues();
+        this.defaultTimeValue = readFromStorage(true);
+        this.defaultLockValue = readFromStorage(false);
         this.inputValidator = inputValidator;
         this.init();
+    }
+
+    public boolean isLock() {
+        return isLock;
+    }
+
+    public String getTimeValue() {
+        return timeValue;
     }
 
     public SettingDialog setProject(Project project) {
@@ -77,13 +90,24 @@ public class SettingDialog extends DialogWrapper {
 
         //时间选择panel
         JPanel timeSelectorPanel = this.createMessagePanel(this.timeText);
+        JPanel lockSelectorPanel = this.createMessagePanel(this.lockText);
+
+        //锁屏
+        lockSelector = new ComboBox<>(220);
+        lockSelector.setEditable(true);
+        lockSelector.setModel(new DefaultComboBoxModel<>(lockSelectedValues));
+        lockSelector.getEditor().setItem(this.defaultLockValue);
+        lockSelector.setSelectedItem(this.defaultLockValue);
+        //时间选择
         timeSelector = new ComboBox<>(220);
         timeSelector.setEditable(true);
         timeSelector.setModel(new DefaultComboBoxModel<>(timeSelectedValues));
         timeSelector.getEditor().setItem(this.defaultTimeValue);
         timeSelector.setSelectedItem(this.defaultTimeValue);
         timeSelectorPanel.add(timeSelector, "Center");
+        lockSelectorPanel.add(lockSelector, "Center");
         panel.add(timeSelectorPanel, "South");
+        panel.add(lockSelectorPanel);
         return panel;
     }
 
@@ -100,7 +124,6 @@ public class SettingDialog extends DialogWrapper {
         container.setLayout(new BorderLayout());
         container.add(iconLabel, "North");
         panel.add(container, "West");
-
         return panel;
     }
 
@@ -119,9 +142,13 @@ public class SettingDialog extends DialogWrapper {
      *
      * @return 提醒时间
      */
-    private String getTimeSelectorValue() {
+    private List<String> getSelectorValue() {
+        ArrayList<String> list = new ArrayList<>();
         Object o = this.timeSelector.getSelectedItem();
-        return o != null ? o.toString() : "";
+        Object lock = this.lockSelector.getSelectedItem();
+        list.add(o != null ? o.toString() : "");
+        list.add(lock != null ? lock.toString() : "");
+        return list;
     }
 
 
@@ -130,23 +157,32 @@ public class SettingDialog extends DialogWrapper {
      *
      * @return 点击 “ok” 按钮后返回所选中的值
      */
-    public String createSettingDialog() {
+    public SettingDialog createSettingDialog() {
         this.show();
-        String time = getTimeSelectorValue();
-        saveToStorage(time);
-        return time;
+        List<String> selectorValue = getSelectorValue();
+        saveToStorage(selectorValue.get(0), selectorValue.get(1));
+        this.isLock = selectorValue.get(1).equals("是");
+        this.timeValue = selectorValue.get(0);
+        return this;
+
     }
 
     /**
      * 从存储中读取
      *
-     * @param isModel 是否是读取模型
+     * @param isModel time or lock
      * @return 存储的值或默认生成备选的第一项的值
      */
     private String readFromStorage(boolean isModel) {
-        return StorageComponent.getValue("lastSelectedMinutes") == null
-                ? isEmpty(timeSelectedValues) ? "" : timeSelectedValues[0]
-                : StorageComponent.getValue("lastSelectedMinutes");
+        if (isModel) {
+            return StorageComponent.getValue("lastSelectedMinutes") == null
+                    ? isEmpty(timeSelectedValues) ? "" : timeSelectedValues[0]
+                    : StorageComponent.getValue("lastSelectedMinutes");
+        } else {
+            return StorageComponent.getValue("lastSelectedLockMode") == null
+                    ? isEmpty(lockSelectedValues) ? "" : lockSelectedValues[0]
+                    : StorageComponent.getValue("lastSelectedLockMode");
+        }
 
     }
 
@@ -155,8 +191,9 @@ public class SettingDialog extends DialogWrapper {
      *
      * @param time 选取的时间值
      */
-    private void saveToStorage(String time) {
+    private void saveToStorage(String time, String isLock) {
         StorageComponent.save("lastSelectedMinutes", time);
+        StorageComponent.save("lastSelectedLockMode", isLock);
     }
 
     /**
@@ -178,5 +215,15 @@ public class SettingDialog extends DialogWrapper {
     private String[] initTimeSelectValues() {
         return Constant.Settings.TIME_SELECT_ARRAY;
     }
+
+    /**
+     * 初始化锁屏下拉框选择
+     *
+     * @return initValues
+     */
+    private String[] initLockSelectValues() {
+        return Constant.Settings.LOCK_SELECT_ARRAY;
+    }
+
 
 }

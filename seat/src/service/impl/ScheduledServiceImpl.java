@@ -4,6 +4,7 @@ import service.ScheduledService;
 
 import javax.swing.*;
 import java.awt.event.ActionListener;
+import java.util.concurrent.ScheduledExecutorService;
 
 
 public class ScheduledServiceImpl implements ScheduledService {
@@ -14,7 +15,20 @@ public class ScheduledServiceImpl implements ScheduledService {
 
     private int delay;
 
-    public static ActionListener listener;
+    public  ActionListener listener;
+
+    /**
+     * 定时计数的线程池
+     */
+    private ScheduledExecutorService service;
+
+    public ScheduledExecutorService getService() {
+        return service;
+    }
+
+    public void setService(ScheduledExecutorService service) {
+        this.service = service;
+    }
 
     private Timer getTimer() {
         return timer;

@@ -3,18 +3,17 @@ package service;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.project.Project;
-import constant.Constant;
 
 
 public interface AlertService {
     /**
      * 显示弹窗
-     *
-     * @param project     当前项目上下文
+     *  @param project     当前项目上下文
 
      * @param timeMinutes 时间（分钟）
+     * @param isLock
      */
-    void showAlertDialog(Project project,  int timeMinutes);
+    void showAlertDialog(Project project,  int timeMinutes,boolean isLock);
 
     /**
      * getInstance

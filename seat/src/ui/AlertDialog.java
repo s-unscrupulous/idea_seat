@@ -11,6 +11,7 @@ import service.ScheduledService;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
 
@@ -21,18 +22,20 @@ public class AlertDialog extends DialogWrapper {
      */
     private String text;
 
+    private boolean isLock;
+
     private CustomOKAction okAction;
     private CustomRestartAction exitAction;
 
-    /**
-     * 图片路径
-     */
-    private String imagePath;
+    private Project project;
 
-    public AlertDialog(@Nullable Project project,  String title, String text) {
+
+    public AlertDialog(@Nullable Project project, String title, String text, boolean isLock) {
         super(project, false, true);
         setTitle(title);
+        this.project = project;
         this.text = text;
+        this.isLock = isLock;
         this.init();
     }
 
@@ -69,7 +72,6 @@ public class AlertDialog extends DialogWrapper {
             // 点击ok的时候进行数据校验
             ScheduledService.getInstance().removeTask();
             ScheduledService.getInstance().addTask(Constant.Infor.FIGHT_TIME, false);
-
             close(CANCEL_EXIT_CODE);
         }
     }
@@ -91,6 +93,7 @@ public class AlertDialog extends DialogWrapper {
             ScheduledService.getInstance().removeTask();
             ScheduledService.getInstance().addTask(Constant.Infor.REST_TIME, true);
             close(CANCEL_EXIT_CODE);
+            new CountDialog(project, "倒计时").show();
         }
     }
 
@@ -124,6 +127,13 @@ public class AlertDialog extends DialogWrapper {
         Random random = new Random();
         int index = random.nextInt(99) + 1;
         JPanel panel = new JPanel(new BorderLayout());
+        if (isLock) {
+            try {
+                Runtime.getRuntime().exec("RunDll32.exe user32.dll,LockWorkStation");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if (index % 2 == 0) {
             JLabel text = new JLabel(this.text);
             text.setFont(new Font("微软雅黑", Font.BOLD, 15));

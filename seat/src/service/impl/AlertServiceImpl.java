@@ -7,11 +7,7 @@ import constant.Constant;
 import service.AlertService;
 import ui.AlertDialog;
 
-import java.io.*;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -31,23 +27,27 @@ public class AlertServiceImpl implements AlertService {
      *
      * @param project     当前项目上下文
      * @param timeMinutes 时间（分钟）
+     * @param isLock
      */
     @Override
-    public void showAlertDialog(Project project, int timeMinutes) {
+    public void showAlertDialog(Project project, int timeMinutes, boolean isLock) {
         if (time == 0) {
             time = System.currentTimeMillis();
         }
         Random random = new Random();
-        notification.setContent(getSubtitle(time,System.currentTimeMillis()));
+        notification.setContent(getSubtitle(time, System.currentTimeMillis()));
         notification.notify(project);
         AlertDialog alertDialog = new AlertDialog(project,
                 Constant.Infor.TITLE,
-                new MessageBuilder().setBody(Constant.Infor.HARM[random.nextInt(Constant.Infor.HARM.length)]).setVariables(timeMinutes).build());
+                new MessageBuilder().
+                        setBody(Constant.Infor.HARM[random.nextInt(Constant.Infor.HARM.length)]).
+                        setVariables(timeMinutes).build(), isLock);
         alertDialog.show();
     }
 
     /**
      * 时间计算
+     *
      * @param start 开始时间
      * @param end   结束时间
      * @return
@@ -62,7 +62,7 @@ public class AlertServiceImpl implements AlertService {
             long day = between / (24 * 60 * 60 * 1000);
             long hour = (between / (60 * 60 * 1000) - day * 24);
             long min = ((between / (60 * 1000)) - day * 24 * 60 - hour * 60);
-            res = String.format("你已经累计工作 %d 天 %d 小时 %d 分，要起来活动一下。", day, hour, min);
+            res = String.format("你已经累计工作 %d 天 %d 小时 %d 分", day, hour, min);
         } catch (Exception e) {
             e.printStackTrace();
         }
