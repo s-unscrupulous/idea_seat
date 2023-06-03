@@ -32,6 +32,8 @@ public class StopAction extends AnAction {
         EditorEventMulticaster eventMulticaster = EditorFactory.getInstance().getEventMulticaster();
         eventMulticaster.removeEditorMouseMotionListener(QueryListener.getInstance());
         //关闭记时间线程
-        ScheduledServiceImpl.getInstance().getService().shutdown();
+        if (ScheduledServiceImpl.getInstance().getService() != null) {
+            ScheduledServiceImpl.getInstance().getService().shutdown();
+        }
     }
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class SettingDialog extends DialogWrapper {
 
-    private boolean isLock;
+    private boolean isLock,isMouth;
     private String timeValue = "";
     /**
      * 项目
@@ -25,18 +25,16 @@ public class SettingDialog extends DialogWrapper {
     /**
      * 窗内文字
      */
-    private String lockText, timeText;
+    private String lockText, timeText, mouthText;
 
     /**
      * 时间备选值
      */
     private String[] timeSelectedValues;
-
     /**
      * 锁屏备选值
      */
     private String[] lockSelectedValues;
-
 
     /**
      * 默认选中时间
@@ -48,20 +46,22 @@ public class SettingDialog extends DialogWrapper {
      */
     private String defaultLockValue;
 
+
     private InputValidator inputValidator;
 
     /**
      * 模型和时间选择框
      */
-    private ComboBox<String> timeSelector, lockSelector;
+    private ComboBox<String> timeSelector, lockSelector, mouthSelector;
 
     public SettingDialog(@Nullable Project project, String title, String timeText
-            , String[] timeSelectedValues, String lockText
+            , String[] timeSelectedValues, String lockText, String mouseText
             , InputValidator inputValidator) {
         super(project);
         setTitle(title);
         this.lockText = lockText;
         this.timeText = timeText;
+        this.mouthText = mouseText;
         this.lockSelectedValues = initLockSelectValues();
         this.timeSelectedValues = initTimeSelectValues();
         this.defaultTimeValue = readFromStorage(true);
@@ -70,8 +70,13 @@ public class SettingDialog extends DialogWrapper {
         this.init();
     }
 
+
     public boolean isLock() {
         return isLock;
+    }
+
+    public boolean isMouth() {
+        return isMouth;
     }
 
     public String getTimeValue() {
@@ -88,9 +93,10 @@ public class SettingDialog extends DialogWrapper {
     protected JComponent createCenterPanel() {
         JPanel panel = this.createIconPanel();
 
-        //时间选择panel
+        //选择panel
         JPanel timeSelectorPanel = this.createMessagePanel(this.timeText);
         JPanel lockSelectorPanel = this.createMessagePanel(this.lockText);
+        JPanel mouthPanel = this.createMessagePanel(this.mouthText);
 
         //锁屏
         lockSelector = new ComboBox<>(220);
@@ -98,16 +104,27 @@ public class SettingDialog extends DialogWrapper {
         lockSelector.setModel(new DefaultComboBoxModel<>(lockSelectedValues));
         lockSelector.getEditor().setItem(this.defaultLockValue);
         lockSelector.setSelectedItem(this.defaultLockValue);
+
         //时间选择
         timeSelector = new ComboBox<>(220);
         timeSelector.setEditable(true);
         timeSelector.setModel(new DefaultComboBoxModel<>(timeSelectedValues));
         timeSelector.getEditor().setItem(this.defaultTimeValue);
         timeSelector.setSelectedItem(this.defaultTimeValue);
+
+        //选择
+        mouthSelector = new ComboBox<>(220);
+        mouthSelector.setEditable(true);
+        mouthSelector.setModel(new DefaultComboBoxModel<>(lockSelectedValues));
+        mouthSelector.getEditor().setItem(this.defaultLockValue);
+        mouthSelector.setSelectedItem(this.defaultLockValue);
+
         timeSelectorPanel.add(timeSelector, "Center");
         lockSelectorPanel.add(lockSelector, "Center");
-        panel.add(timeSelectorPanel, "South");
-        panel.add(lockSelectorPanel);
+        mouthPanel.add(mouthSelector, "Center");
+        panel.add(timeSelectorPanel, BorderLayout.NORTH);
+        panel.add(lockSelectorPanel, BorderLayout.CENTER);
+        panel.add(mouthPanel, BorderLayout.SOUTH);
         return panel;
     }
 
@@ -118,11 +135,11 @@ public class SettingDialog extends DialogWrapper {
      */
     @NotNull
     protected JPanel createIconPanel() {
-        JPanel panel = new JPanel(new BorderLayout(15, 0));
-        JLabel iconLabel = new JLabel(Messages.getQuestionIcon());
+        JPanel panel = new JPanel(new BorderLayout());
+        //JLabel iconLabel = new JLabel(Messages.getQuestionIcon());
         Container container = new Container();
         container.setLayout(new BorderLayout());
-        container.add(iconLabel, "North");
+        //container.add(iconLabel, "North");
         panel.add(container, "West");
         return panel;
     }
@@ -146,8 +163,10 @@ public class SettingDialog extends DialogWrapper {
         ArrayList<String> list = new ArrayList<>();
         Object o = this.timeSelector.getSelectedItem();
         Object lock = this.lockSelector.getSelectedItem();
+        Object mouth = this.mouthSelector.getSelectedItem();
         list.add(o != null ? o.toString() : "");
         list.add(lock != null ? lock.toString() : "");
+        list.add(mouth != null ? mouth.toString() : "");
         return list;
     }
 
@@ -161,8 +180,9 @@ public class SettingDialog extends DialogWrapper {
         this.show();
         List<String> selectorValue = getSelectorValue();
         saveToStorage(selectorValue.get(0), selectorValue.get(1));
-        this.isLock = selectorValue.get(1).equals("是");
         this.timeValue = selectorValue.get(0);
+        this.isLock = selectorValue.get(1).equals("是");
+        this.isMouth = selectorValue.get(2).equals("是");
         return this;
 
     }

@@ -43,9 +43,8 @@ public class QueryListener implements EditorMouseMotionListener {
     @Override
     public void mouseMoved(@NotNull EditorMouseEvent e) {
         long now = System.currentTimeMillis();
-        System.out.println("move");
         flag.set(true);
-        //任务启动且10分钟没有移动鼠标且没有任务运行
+        //任务启动且5分钟没有移动鼠标且没有任务运行
         if (SettingAction.isStart && now - beforeMouse > Constant.Infor.STOP_TIME &&
                 !ScheduledService.getInstance().isTaskRunning()) {
             ScheduledService.getInstance().addTask(0, true);

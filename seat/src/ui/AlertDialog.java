@@ -27,6 +27,8 @@ public class AlertDialog extends DialogWrapper {
     private CustomOKAction okAction;
     private CustomRestartAction exitAction;
 
+    private long currentTime;
+
     private Project project;
 
 
@@ -48,8 +50,14 @@ public class AlertDialog extends DialogWrapper {
     @NotNull
     @Override
     protected Action[] createActions() {
-        exitAction = new CustomRestartAction("休息一会,命重要");
-        okAction = new CustomOKAction("再战五分钟");
+        String left = "休息一会,命重要";
+        String right = "再战五分钟";
+        if (isLock) {
+            left = "到点下班！！！！";
+            right = "bug free！！！！";
+        }
+        exitAction = new CustomRestartAction(left);
+        okAction = new CustomOKAction(right);
         // 设置默认的焦点按钮
         exitAction.putValue(DialogWrapper.DEFAULT_ACTION, true);
         return new Action[]{okAction, exitAction};
@@ -71,7 +79,11 @@ public class AlertDialog extends DialogWrapper {
         protected void doAction(ActionEvent actionEvent) {
             // 点击ok的时候进行数据校验
             ScheduledService.getInstance().removeTask();
-            ScheduledService.getInstance().addTask(Constant.Infor.FIGHT_TIME, false);
+            if (!isLock) {
+                ScheduledService.getInstance().addTask(Constant.Infor.FIGHT_TIME, false);
+            } else {
+                ScheduledService.getInstance().addTask(0, true);
+            }
             close(CANCEL_EXIT_CODE);
         }
     }
@@ -91,9 +103,14 @@ public class AlertDialog extends DialogWrapper {
         protected void doAction(ActionEvent actionEvent) {
             // 点击ok的时候进行数据校验
             ScheduledService.getInstance().removeTask();
-            ScheduledService.getInstance().addTask(Constant.Infor.REST_TIME, true);
-            close(CANCEL_EXIT_CODE);
-            new CountDialog(project, "倒计时").show();
+            if (!isLock) {
+                ScheduledService.getInstance().addTask(Constant.Infor.REST_TIME, true);
+                close(CANCEL_EXIT_CODE);
+                new CountDialog(project, "倒计时", currentTime).show();
+            } else {
+                ScheduledService.getInstance().addTask(0, true);
+                close(CANCEL_EXIT_CODE);
+            }
         }
     }
 
@@ -129,10 +146,17 @@ public class AlertDialog extends DialogWrapper {
         JPanel panel = new JPanel(new BorderLayout());
         if (isLock) {
             try {
+                JLabel text = new JLabel("欢迎回来");
+                text.setFont(new Font("微软雅黑", Font.BOLD, 15));
+                //添加进容器
+                panel.add(text, BorderLayout.CENTER);
+                panel.setSize(600, 300);
                 Runtime.getRuntime().exec("RunDll32.exe user32.dll,LockWorkStation");
+                Thread.sleep(2000);
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            return panel;
         }
         if (index % 2 == 0) {
             JLabel text = new JLabel(this.text);
@@ -152,7 +176,7 @@ public class AlertDialog extends DialogWrapper {
             panel.add(text, BorderLayout.PAGE_END);
             panel.add(label, BorderLayout.CENTER);
         }
-
+        currentTime = System.currentTimeMillis();
         return panel;
     }
 }

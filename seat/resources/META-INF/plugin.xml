@@ -1,13 +1,13 @@
 <idea-plugin>
     <id>com.your.company.unique.plugin.id</id>
     <name>休息提示小助手</name>
-    <version>1.1</version>
+    <version>2.0</version>
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="173.0"/>
 
-    <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.java</depends>
 
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.python-pro-capable</depends>
 
 
     <extensions defaultExtensionNs="com.intellij">

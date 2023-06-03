@@ -14,14 +14,12 @@ import service.ScheduledService;
 import service.impl.ScheduledServiceImpl;
 import ui.SettingDialog;
 
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class SettingAction extends AnAction {
-
     /**
      * 判断是否启动了
      */
@@ -34,7 +32,7 @@ public class SettingAction extends AnAction {
         //创建设置窗口
         SettingDialog settingDialog = new SettingDialog(p, Constant.Settings.SETTING_WINDOW_TITLE
                 , Constant.Settings.SETTING_TIME_SELECTOR_TEXT
-                , Constant.Settings.TIME_SELECT_ARRAY, Constant.Settings.SETTING_LOCK_WINDOWS,
+                , Constant.Settings.TIME_SELECT_ARRAY, Constant.Settings.SETTING_LOCK_WINDOWS,Constant.Settings.SETTING_MOUSE_CHECK,
                 new InputValidator() {
                     @Override
                     public boolean checkInput(String s) {
@@ -56,6 +54,7 @@ public class SettingAction extends AnAction {
         if (!settingDialog.isOK()) {
             return;
         }
+
         try {
             int period = Integer.parseInt(settingDialog.getTimeValue());
             ScheduledService.getInstance().addTask(period * 60 * 1000, e1 -> ProgressManager.getInstance()
@@ -68,25 +67,26 @@ public class SettingAction extends AnAction {
             ex.printStackTrace();
         }
         isStart = true;
-        EditorEventMulticaster eventMulticaster = EditorFactory.getInstance().getEventMulticaster();
-        eventMulticaster.addEditorMouseMotionListener(QueryListener.getInstance());
-        ScheduledExecutorService service = Executors
-                .newSingleThreadScheduledExecutor();
-        ScheduledServiceImpl.getInstance().setService(service);
-        AtomicInteger count = new AtomicInteger();
-        QueryListener listener = QueryListener.getInstance();
-        listener.setProject(p);
-        service.scheduleAtFixedRate(() -> {
-            System.out.println(count.get());
-            if (listener.flag.get()) {
-                count.set(0);
-                listener.flag.set(false);
-            } else {
-                count.getAndIncrement();
-                if (count.get() > 5) {
-                    ScheduledServiceImpl.getInstance().removeTask();
+
+        if (settingDialog.isMouth()) {
+            EditorEventMulticaster eventMulticaster = EditorFactory.getInstance().getEventMulticaster();
+            eventMulticaster.addEditorMouseMotionListener(QueryListener.getInstance());
+            ScheduledExecutorService service =  ScheduledServiceImpl.getInstance().getService();
+            AtomicInteger count = new AtomicInteger();
+            QueryListener listener = QueryListener.getInstance();
+            listener.setProject(p);
+            service.scheduleAtFixedRate(() -> {
+                if (listener.flag.get()) {
+                    count.set(0);
+                    listener.flag.set(false);
+                } else {
+                    count.getAndIncrement();
+                    if (count.get() > 10) {
+                        ScheduledServiceImpl.getInstance().removeTask();
+                    }
                 }
-            }
-        }, 5, 60, TimeUnit.SECONDS);
+            }, 5, 60, TimeUnit.SECONDS);
+
+        }
     }
 }

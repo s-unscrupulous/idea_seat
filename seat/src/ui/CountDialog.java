@@ -2,8 +2,6 @@ package ui;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -18,9 +16,12 @@ public class CountDialog extends DialogWrapper {
      */
     private ScheduledThreadPoolExecutor scheduled;
 
-    protected CountDialog(@Nullable Project project, String title) {
+    private long time;
+
+    protected CountDialog(@Nullable Project project, String title, long time) {
         super(project);
         scheduled = new ScheduledThreadPoolExecutor(2);
+        this.time = time;
         init();
         setTitle(title);
     }
@@ -29,7 +30,8 @@ public class CountDialog extends DialogWrapper {
     @Override
     protected @Nullable
     JComponent createCenterPanel() {
-        long start = System.currentTimeMillis() + 10 * 1000;
+        long gap = System.currentTimeMillis() - time;
+        long start = System.currentTimeMillis() + Math.max(0, 5 * 60 * 1000 - gap);
         JLabel text = new JLabel();
         text.setFont(new Font("微软雅黑", Font.BOLD, 15));
         scheduled.scheduleAtFixedRate(() -> {
@@ -44,7 +46,7 @@ public class CountDialog extends DialogWrapper {
             long seconds = time - hour * 3600 - minute * 60;
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("<html><br>距离休息结束还有<br>")
-                    .append("&nbsp;&nbsp;&nbsp;&nbsp;").append(minute).append("分 ").append(seconds).append("秒 ")
+                    .append("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;").append(minute).append("分 ").append(seconds).append("秒 ")
                     .append("</html>");
 
             text.setText(stringBuilder.toString());
